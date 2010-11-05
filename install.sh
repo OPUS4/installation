@@ -19,8 +19,6 @@
 #set -ex
 set -e
 
-clear
-
 BASEDIR=/var/local/opus4
 
 ZEND_LIB_URL='http://framework.zend.com/releases/ZendFramework-1.10.6/ZendFramework-1.10.6-minimal.tar.gz'
@@ -160,3 +158,5 @@ if [ ! -z $DELETE_DOWNLOADS ] && [ $DELETE_DOWNLOADS != 'N' ]; then
   rm -rf downloads
 fi
   
+echo
+echo "OPUS 4 is running now! Point your browser to http://localhost/opus4"
