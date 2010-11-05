@@ -123,7 +123,7 @@ if [ ! -z $MYSQLPORT]; then
   MYSQL_OPUS4ADMIN="$MYSQL_OPUS4ADMIN -P $MYSQLPORT"
 fi
 
-echo 'Next you'll be now prompted to enter the root password of your MySQL server' 
+echo "Next you'll be now prompted to enter the root password of your MySQL server"
 $MYSQL <<LimitString
 CREATE DATABASE $DBNAME DEFAULT CHARACTER SET = UTF8 DEFAULT COLLATE = UTF8_GENERAL_CI;
 GRANT ALL PRIVILEGES ON $DBNAME.* TO '$ADMIN'@'localhost' IDENTIFIED BY '$ADMIN_PASSWORD';
