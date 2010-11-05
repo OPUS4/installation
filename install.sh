@@ -155,7 +155,7 @@ if [ -z $IMPORT_TESTDATA ] || [ $IMPORT_TESTDATA = 'Y' ]; then
   cp -rv testdata/fulltexts/* workspace/files
 fi
 
-read -p "KeepDelete downloads? [N]: " DELETE_DOWNLOADS
+read -p "Delete downloads? [N]: " DELETE_DOWNLOADS
 if [ ! -z $DELETE_DOWNLOADS ] && [ $DELETE_DOWNLOADS != 'N' ]; then
   rm -rf downloads
 fi
