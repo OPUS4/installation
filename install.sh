@@ -139,17 +139,16 @@ cd -
 cd opus4/db
 sed -e "s!<user>!'$ADMIN'!" -e "s!<password>!'$ADMIN_PASSWORD'!" -e "s!<host>!'$MYSQLHOST'!" -e "s!<port>!'$MYSQLPORT'!" -e "s!<dbname>!'$DBNAME'!" createdb.sh.template > createdb.sh
 chmod +x createdb.sh
+./createdb.sh
 cd -
 
 read -p "Import test data? [Y]: " IMPORT_TESTDATA
 if [ -z $IMPORT_TESTDATA ] || [ $IMPORT_TESTDATA = 'Y' ]; then
   # import test data
-  cd testdata/sql
-  for i in `find . -name *.sql \( -type f -o -type l \) | sort`; do
+  for i in `find testdata/sql -name *.sql \( -type f -o -type l \) | sort`; do
     echo "Inserting file '${i}'"
-    $MYSQL_CLIENT --$MYSQL $DBNAME < "${i}"
+    $MYSQL_OPUS4ADMIN $DBNAME < "${i}"
   done
-  cd -
 
   # copy test fulltexts to workspace directory
   cp -rv testdata/fulltexts/* workspace/files
