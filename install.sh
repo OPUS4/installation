@@ -16,7 +16,8 @@
 # @license     http://www.gnu.org/licenses/gpl.html General Public License
 # @version     $Id$
 
-set -ex
+#set -ex
+set -e
 
 clear
 
@@ -154,8 +155,8 @@ if [ -z $IMPORT_TESTDATA ] || [ $IMPORT_TESTDATA = 'Y' ]; then
   cp -rv testdata/fulltexts/* workspace/files
 fi
 
-read -p "Delete downloads? [N]: " DELETE_DOWNLOADS
-if [ -z $DELETE_DOWNLOADS ] || [ $DELETE_DOWNLOADS = 'N' ]; then
+read -p "KeepDelete downloads? [N]: " DELETE_DOWNLOADS
+if [ ! -z $DELETE_DOWNLOADS ] && [ $DELETE_DOWNLOADS != 'N' ]; then
   rm -rf downloads
 fi
   
