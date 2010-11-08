@@ -105,7 +105,7 @@ echo "Next, you will be asked to specify a password for the new account."
 passwd $OPUS_USER_NAME
 cd install
 mv opus4-solr-jetty.conf opus4-solr-jetty.conf.tmp
-sed -e 's!^JETTY_USER=!JETTY_USER=$OPUS_USER_NAME!' opus4-solr-jetty.conf.tmp > opus4-solr-jetty.conf
+sed -e "s!^JETTY_USER=!JETTY_USER=$OPUS_USER_NAME!" opus4-solr-jetty.conf.tmp > opus4-solr-jetty.conf
 rm opus4-solr-jetty.conf.tmp
 cd $BASEDIR
 
@@ -120,7 +120,6 @@ echo ""
 read -p "MySQL DBMS Host [leave blank for using Unix domain sockets]: " MYSQLHOST
 read -p "MySQL DBMS Port [leave blank for using Unix domain sockets]: " MYSQLPORT
 read -p "MySQL Root User [root]: "                                      MYSQLROOT
-#read -p "MySQL Root Password: " -s                                      MYSQLROOT_PASSWORD
 echo ""
 
 
@@ -139,7 +138,7 @@ if [ -z $MYSQLROOT ]; then
 fi
 
 # process creating mysql user and database
-MYSQL="$MYSQL_CLIENT --default-character-set=utf8 -u $MYSQLROOT -p$MYSQLROOT_PASSWORD -v"
+MYSQL="$MYSQL_CLIENT --default-character-set=utf8 -u $MYSQLROOT -p -v"
 MYSQL_OPUS4ADMIN="$MYSQL_CLIENT --default-character-set=utf8 -u $ADMIN -p$ADMIN_PASSWORD -v"
 if [ ! -z $MYSQLHOST]
 then
@@ -243,7 +242,7 @@ then
   cp -rv testdata/fulltexts/* workspace/files
 
   # sleep some seconds to ensure the server is running
-  echo "sleep some seconds until the Solr server is running"
+  echo -e "\n\nsleep some seconds until the Solr server is running"
   i=0;
   while [ $i -lt 20 ]
   do
@@ -258,7 +257,7 @@ then
 fi
 
 # change file owner to $OPUS_USER_NAME
-chown -v -R $OPUS_USER_NAME:$OPUS_USER_NAME $BASEDIR
+chown -R $OPUS_USER_NAME:$OPUS_USER_NAME $BASEDIR
 
 # delete tar archives
 cd $BASEDIR
