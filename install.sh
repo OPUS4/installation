@@ -23,7 +23,7 @@ BASEDIR=/var/local/opus4
 
 ZEND_LIB_URL='http://framework.zend.com/releases/ZendFramework-1.10.6/ZendFramework-1.10.6-minimal.tar.gz'
 JPGRAPH_LIB_URL='http://jpgraph.net/download/download.php?p=1'
-SOLR_SERVER_URL="http://www.apache.org/dist//lucene/solr/1.4.1/apache-solr-1.4.1.tgz"
+SOLR_SERVER_URL='http://www.apache.org/dist//lucene/solr/1.4.1/apache-solr-1.4.1.tgz'
 SOLR_PHP_CLIENT_LIB_URL='http://solr-php-client.googlecode.com/svn/trunk/'
 SOLR_PHP_CLIENT_LIB_REVISION=36
 JQUERY_LIB_URL='http://code.jquery.com/jquery-1.4.3.min.js'
@@ -32,11 +32,13 @@ MYSQL_CLIENT=/usr/bin/mysql
 
 cd $BASEDIR
 
-if [ ! -d downloads ]; then
+if [ ! -d downloads ]
+then
   mkdir -p downloads
   cd downloads
   wget -O zend.tar.gz "$ZEND_LIB_URL"
-  if [ ! -f zend.tar.gz ] then;
+  if [ ! -f zend.tar.gz ]
+  then
     echo "Unable to download $ZEND_LIB_URL"
     exit 1
   fi
@@ -49,7 +51,8 @@ if [ ! -d downloads ]; then
   fi
 
   wget -O solr.tgz "$SOLR_SERVER_URL"
-  if [ ! -f solr.tgz ] then;
+  if [ ! -f solr.tgz ]
+  then
     echo "Unable to download $SOLR_SERVER_URL"
     exit 1
   fi
@@ -118,11 +121,13 @@ fi
 # process creating mysql user and database
 MYSQL="$MYSQL_CLIENT --default-character-set=utf8 -u $MYSQLROOT -p$MYSQLROOT_PASSWORD -v"
 MYSQL_OPUS4ADMIN="$MYSQL_CLIENT --default-character-set=utf8 -u $ADMIN -p$ADMIN_PASSWORD -v"
-if [ ! -z $MYSQLHOST]; then
+if [ ! -z $MYSQLHOST]
+then
   MYSQL="$MYSQL -h $MYSQLHOST"
   MYSQL_OPUS4ADMIN="$MYSQL_OPUS4ADMIN -h $MYSQLHOST"
 fi
-if [ ! -z $MYSQLPORT]; then
+if [ ! -z $MYSQLPORT]
+then
   MYSQL="$MYSQL -P $MYSQLPORT"
   MYSQL_OPUS4ADMIN="$MYSQL_OPUS4ADMIN -P $MYSQLPORT"
 fi
@@ -157,7 +162,8 @@ cd -
 
 # install and configure Solr search server
 read -p "Install and configure Solr server? [Y]: " INSTALL_SOLR
-if [ -z $INSTALL_SOLR ] || [ $INSTALL_SOLR = 'Y' ]; then
+if [ -z $INSTALL_SOLR ] || [ $INSTALL_SOLR = 'Y' ]
+then
   tar xfvz downloads/solr.tgz
   ln -sf apache-solr-1.4.1 solr 
   cd solr
@@ -186,7 +192,8 @@ if [ -z $INSTALL_SOLR ] || [ $INSTALL_SOLR = 'Y' ]; then
 
   cd $BASEDIR/install
   read -p "Install init.d script to start and stop Solr server automatically? [Y]: " INSTALL_INIT_SCRIPT
-  if [ -z $INSTALL_INIT_SCRIPT ] || [ $INSTALL_INIT_SCRIPT = 'Y' ]; then
+  if [ -z $INSTALL_INIT_SCRIPT ] || [ $INSTALL_INIT_SCRIPT = 'Y' ]
+  then
     ln -sf opus4-solr.sh /etc/init.d/opus4-solr.sh
     ln -sf opus4-solr-jetty.conf /etc/default/jetty
     chmod +x /etc/init.d/opus4-solr.sh
@@ -204,7 +211,8 @@ fi
 
 # import some test documents
 read -p "Import test data? [Y]: " IMPORT_TESTDATA
-if [ -z $IMPORT_TESTDATA ] || [ $IMPORT_TESTDATA = 'Y' ]; then
+if [ -z $IMPORT_TESTDATA ] || [ $IMPORT_TESTDATA = 'Y' ]
+then
   # import test data
   for i in `find testdata/sql -name *.sql \( -type f -o -type l \) | sort`; do
     echo "Inserting file '${i}'"
