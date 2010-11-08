@@ -23,6 +23,7 @@ BASEDIR=/var/local/opus4
 
 ZEND_LIB_URL='http://framework.zend.com/releases/ZendFramework-1.10.6/ZendFramework-1.10.6-minimal.tar.gz'
 JPGRAPH_LIB_URL='http://jpgraph.net/download/download.php?p=1'
+SOLR_SERVER_URL="http://www.apache.org/dist//lucene/solr/1.4.1/apache-solr-1.4.1.tgz"
 SOLR_PHP_CLIENT_LIB_URL='http://solr-php-client.googlecode.com/svn/trunk/'
 SOLR_PHP_CLIENT_LIB_REVISION=36
 JQUERY_LIB_URL='http://code.jquery.com/jquery-1.4.3.min.js'
@@ -35,16 +36,21 @@ if [ ! -d downloads ]; then
   mkdir -p downloads
   cd downloads
   wget -O zend.tar.gz "$ZEND_LIB_URL"
-  if [ ! -f zend.tar.gz ]
-  then
+  if [ ! -f zend.tar.gz ] then;
     echo "Unable to download $ZEND_LIB_URL"
     exit 1
   fi
 
   wget -O jpgraph.tar.gz "$JPGRAPH_LIB_URL"
-  if false && [ ! -f jpgraph.tar.gz ]
+  if [ ! -f jpgraph.tar.gz ]
   then
     echo "Unable to download $JPGRAPH_LIB_URL"
+    exit 1
+  fi
+
+  wget -O solr.tgz "$SOLR_SERVER_URL"
+  if [ ! -f solr.tgz ] then;
+    echo "Unable to download $SOLR_SERVER_URL"
     exit 1
   fi
 
@@ -75,7 +81,7 @@ fi
 ln -svf SolrPhpClient_r$SOLR_PHP_CLIENT_LIB_REVISION SolrPhpClient
 cd $BASEDIR 
 
-# download jQuery library
+# download jQuery JavaScript library
 cd opus4/public/js
 wget -O jquery.js "$JQUERY_LIB_URL"
 cd $BASEDIR
@@ -131,16 +137,72 @@ LimitString
 
 # create config.ini and set database related parameters
 cd opus4/application/configs
-sed -e "s!<db.params.host>!'$MYSQLHOST'!" -e "s!<db.params.port>!'$MYSQLPORT'!" -e "s!<db.params.username>!'$WEBAPP_USER'!" -e "s!<db.params.password>!'$WEBAPP_USER_PASSWORD'!" -e "s!<db.params.dbname>!'$DBNAME'!" config.ini.template > config.ini
+sed -e "s!^db.params.host =!db.params.host ='$MYSQLHOST'!" \
+    -e "s!^db.params.port =!db.params.port = '$MYSQLPORT'!" \
+    -e "s!^db.params.username =!db.params.username = '$WEBAPP_USER'!" \
+    -e "s!^db.params.password =!db.params.password = '$WEBAPP_USER_PASSWORD'!" \
+    -e "s!^db.params.dbname =!db.params.dbname = '$DBNAME'!" config.ini.template > config.ini
 cd -
 
 # create createdb.sh and set database related parameters
 cd opus4/db
-sed -e "s!<user>!'$ADMIN'!" -e "s!<password>!'$ADMIN_PASSWORD'!" -e "s!<host>!'$MYSQLHOST'!" -e "s!<port>!'$MYSQLPORT'!" -e "s!<dbname>!'$DBNAME'!" createdb.sh.template > createdb.sh
+sed -e "s!^user=!user='$ADMIN'!" \
+    -e "s!^password=!password='$ADMIN_PASSWORD'!" \
+    -e "s!^host=!host='$MYSQLHOST'!" \
+    -e "s!^port=!port='$MYSQLPORT'!" \
+    -e "s!^dbname=!dbname='$DBNAME'!" createdb.sh.template > createdb.sh
 chmod +x createdb.sh
 ./createdb.sh
 cd -
 
+# install and configure Solr search server
+read -p "Install and configure Solr server? [Y]: " INSTALL_SOLR
+if [ -z $INSTALL_SOLR ] || [ $INSTALL_SOLR = 'Y' ]; then
+  tar xfvz downloads/solr.tgz
+  ln -sf apache-solr-1.4.1 solr 
+  cd solr
+  cp -r example opus4
+  cd opus4
+  rm -r example-DIH exampledocs multicore/exampledocs
+  cd solr/conf
+  ln -sf ../../../../solrconfig/schema.xml
+  ln -sf ../../../../solrconfig.solrconfig.xml
+  cd ../../
+  ln -s ../../solrconfig/logging.properties
+
+  read -p "Solr server port number [8983]: " SOLR_SERVER_PORT
+  if [ -z $SOLR_SERVER_PORT ]; then
+    $SOLR_SERVER_PORT=8983;
+  fi
+  cd $BASEDIR/application/configs
+  cp config.ini config.ini.tmp
+  sed -e "s!^searchengine.index.host =!searchengine.index.host = 'localhost'!" \
+      -e "s!^searchengine.index.port =!searchengine.index.port = '$SOLR_SERVER_PORT'!" \
+      -e "s!^searchengine.index.app =!searchengine.index.app = 'solr'!" \
+      -e "s!^searchengine.extract.host =!searchengine.extract.host = 'localhost'!" \
+      -e "s!^searchengine.extract.port =!searchengine.extract.port = '$SOLR_SERVER_PORT'!" \
+      -e "s!^searchengine.extract.app =!searchengine.extract.app = 'solr'!" config.ini.tmp > config.ini 
+  rm config.ini.tmp
+
+  cd $BASEDIR/install
+  read -p "Install init.d script to start and stop Solr server automatically? [Y]: " INSTALL_INIT_SCRIPT
+  if [ -z $INSTALL_INIT_SCRIPT ] || [ $INSTALL_INIT_SCRIPT = 'Y' ]; then
+    ln -sf opus4-solr.sh /etc/init.d/opus4-solr.sh
+    ln -sf opus4-solr-jetty.conf /etc/default/jetty
+    chmod +x /etc/init.d/opus4-solr.sh
+    update-rc.d opus4-solr.sh defaults
+  fi
+
+  #start Solr server
+  mv opus4-solr-jetty.conf opus4-solr-jetty.conf.tmp
+  sed -e "s!^JETTY_PORT=!JETTY_PORT=$SOLR_SERVER_PORT!" opus4-solr-jetty.conf.tmp > opus4-solr-jetty.conf
+  rm opus4-solr-jetty.conf.tmp
+  chmod +x opus4-solr.sh
+  ./opus4-solr.sh start
+  cd -
+fi
+
+# import some test documents
 read -p "Import test data? [Y]: " IMPORT_TESTDATA
 if [ -z $IMPORT_TESTDATA ] || [ $IMPORT_TESTDATA = 'Y' ]; then
   # import test data
@@ -153,10 +215,11 @@ if [ -z $IMPORT_TESTDATA ] || [ $IMPORT_TESTDATA = 'Y' ]; then
   cp -rv testdata/fulltexts/* workspace/files
 fi
 
+# delete tar archives
 read -p "Delete downloads? [N]: " DELETE_DOWNLOADS
 if [ ! -z $DELETE_DOWNLOADS ] && [ $DELETE_DOWNLOADS != 'N' ]; then
   rm -rf downloads
 fi
   
 echo
-echo "OPUS 4 is running now! Point your browser to http://localhost/opus4"
+echo "OPUS 4 is running now! Point your browser to http://localhost/opus4/"
