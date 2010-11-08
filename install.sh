@@ -193,7 +193,7 @@ then
   read -p "Install init.d script to start and stop Solr server automatically? [Y]: " INSTALL_INIT_SCRIPT
   if [ -z $INSTALL_INIT_SCRIPT ] || [ $INSTALL_INIT_SCRIPT = 'Y' ]
   then
-    ln -sf opus4-solr.sh /etc/init.d/opus4-solr.sh
+    cp -i opus4-solr.sh /etc/init.d/opus4-solr.sh
     ln -sf opus4-solr-jetty.conf /etc/default/jetty
     chmod +x /etc/init.d/opus4-solr.sh
     update-rc.d opus4-solr.sh defaults
@@ -205,7 +205,6 @@ then
   rm opus4-solr-jetty.conf.tmp
   chmod +x opus4-solr.sh
   ./opus4-solr.sh start
-  cd -
 fi
 
 # import some test documents
@@ -213,6 +212,7 @@ read -p "Import test data? [Y]: " IMPORT_TESTDATA
 if [ -z $IMPORT_TESTDATA ] || [ $IMPORT_TESTDATA = 'Y' ]
 then
   # import test data
+  cd $BASEDIR/opus4
   for i in `find testdata/sql -name *.sql \( -type f -o -type l \) | sort`; do
     echo "Inserting file '${i}'"
     $MYSQL_OPUS4ADMIN $DBNAME < "${i}"
@@ -223,6 +223,7 @@ then
 fi
 
 # delete tar archives
+cd $BASEDIR
 read -p "Delete downloads? [N]: " DELETE_DOWNLOADS
 if [ ! -z $DELETE_DOWNLOADS ] && [ $DELETE_DOWNLOADS != 'N' ]; then
   rm -rf downloads
