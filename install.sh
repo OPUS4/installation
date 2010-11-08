@@ -196,6 +196,7 @@ then
     ln -sf $BASEDIR/install/opus4-solr.sh /etc/init.d/opus4-solr.sh
     ln -sf $BASEDIR/install/opus4-solr-jetty.conf /etc/default/jetty
     chmod +x /etc/init.d/opus4-solr.sh
+    update-rc.d -f opus4-solr.sh remove
     update-rc.d opus4-solr.sh defaults
   fi
 
@@ -212,7 +213,7 @@ read -p "Import test data? [Y]: " IMPORT_TESTDATA
 if [ -z $IMPORT_TESTDATA ] || [ $IMPORT_TESTDATA = 'Y' ]
 then
   # import test data
-  cd $BASEDIR/opus4
+  cd $BASEDIR
   for i in `find testdata/sql -name *.sql \( -type f -o -type l \) | sort`; do
     echo "Inserting file '${i}'"
     $MYSQL_OPUS4ADMIN $DBNAME < "${i}"
@@ -220,6 +221,9 @@ then
 
   # copy test fulltexts to workspace directory
   cp -rv testdata/fulltexts/* workspace/files
+
+  # start indexing of testdata
+  php5 $BASEDIR/opus4/scripts/SolrIndexBuilder.php
 fi
 
 # delete tar archives
