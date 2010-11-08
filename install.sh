@@ -193,19 +193,19 @@ then
   read -p "Install init.d script to start and stop Solr server automatically? [Y]: " INSTALL_INIT_SCRIPT
   if [ -z $INSTALL_INIT_SCRIPT ] || [ $INSTALL_INIT_SCRIPT = 'Y' ]
   then
-    ln -sf $BASEDIR/install/opus4-solr.sh /etc/init.d/opus4-solr.sh
+    ln -sf $BASEDIR/install/opus4-solr-jetty /etc/init.d/opus4-solr-jetty
     ln -sf $BASEDIR/install/opus4-solr-jetty.conf /etc/default/jetty
-    chmod +x /etc/init.d/opus4-solr.sh
-    update-rc.d -f opus4-solr.sh remove
-    update-rc.d opus4-solr.sh defaults
+    chmod +x /etc/init.d/opus4-solr-jetty
+    update-rc.d -f opus4-solr-jetty remove
+    update-rc.d opus4-solr-jetty defaults
   fi
 
   #start Solr server
   mv opus4-solr-jetty.conf opus4-solr-jetty.conf.tmp
   sed -e "s!^JETTY_PORT=!JETTY_PORT=$SOLR_SERVER_PORT!" opus4-solr-jetty.conf.tmp > opus4-solr-jetty.conf
   rm opus4-solr-jetty.conf.tmp
-  chmod +x opus4-solr.sh
-  ./opus4-solr.sh start
+  chmod +x opus4-solr-jetty
+  ./opus4-solr-jetty start
 fi
 
 # import some test documents
