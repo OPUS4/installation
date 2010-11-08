@@ -168,7 +168,7 @@ then
   cd solr
   cp -r example opus4
   cd opus4
-  rm -r example-DIH exampledocs multicore/exampledocs
+  rm -rf example-DIH exampledocs multicore/exampledocs
   cd solr/conf
   ln -sf $BASEDIR/solrconfig/schema.xml
   ln -sf $BASEDIR/solrconfig.solrconfig.xml
