@@ -242,12 +242,23 @@ then
   # copy test fulltexts to workspace directory
   cp -rv testdata/fulltexts/* workspace/files
 
+  # sleep some seconds to ensure the server is running
+  echo "sleep some seconds until the Solr server is running"
+  i=0;
+  while [ $i -lt 20 ]
+  do
+    sleep 1
+    echo -n "."
+    i=$[$i+1]
+  done
+  echo ""
+
   # start indexing of testdata
   php5 $BASEDIR/opus4/scripts/SolrIndexBuilder.php
 fi
 
 # change file owner to $OPUS_USER_NAME
-chmod -v -R $OPUS_USER_NAME:$OPUS_USER_NAME $BASEDIR
+chown -v -R $OPUS_USER_NAME:$OPUS_USER_NAME $BASEDIR
 
 # delete tar archives
 cd $BASEDIR
