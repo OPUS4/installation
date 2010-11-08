@@ -180,7 +180,7 @@ then
   if [ -z $SOLR_SERVER_PORT ]; then
     $SOLR_SERVER_PORT=8983;
   fi
-  cd $BASEDIR/application/configs
+  cd $BASEDIR/opus4/application/configs
   cp config.ini config.ini.tmp
   sed -e "s!^searchengine.index.host =!searchengine.index.host = 'localhost'!" \
       -e "s!^searchengine.index.port =!searchengine.index.port = '$SOLR_SERVER_PORT'!" \
