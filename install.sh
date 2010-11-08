@@ -177,7 +177,7 @@ then
 
   read -p "Solr server port number [8983]: " SOLR_SERVER_PORT
   if [ -z $SOLR_SERVER_PORT ]; then
-    $SOLR_SERVER_PORT=8983;
+    SOLR_SERVER_PORT=8983;
   fi
   cd $BASEDIR/opus4/application/configs
   cp config.ini config.ini.tmp
