@@ -141,16 +141,15 @@ FLUSH PRIVILEGES;
 LimitString
 
 # create config.ini and set database related parameters
-cd opus4/application/configs
+cd $BASEDIR/opus4/application/configs
 sed -e "s!^db.params.host =!db.params.host ='$MYSQLHOST'!" \
     -e "s!^db.params.port =!db.params.port = '$MYSQLPORT'!" \
     -e "s!^db.params.username =!db.params.username = '$WEBAPP_USER'!" \
     -e "s!^db.params.password =!db.params.password = '$WEBAPP_USER_PASSWORD'!" \
     -e "s!^db.params.dbname =!db.params.dbname = '$DBNAME'!" config.ini.template > config.ini
-cd -
 
 # create createdb.sh and set database related parameters
-cd opus4/db
+cd $BASEDIR/opus4/db
 sed -e "s!^user=!user='$ADMIN'!" \
     -e "s!^password=!password='$ADMIN_PASSWORD'!" \
     -e "s!^host=!host='$MYSQLHOST'!" \
@@ -158,9 +157,9 @@ sed -e "s!^user=!user='$ADMIN'!" \
     -e "s!^dbname=!dbname='$DBNAME'!" createdb.sh.template > createdb.sh
 chmod +x createdb.sh
 ./createdb.sh
-cd -
 
 # install and configure Solr search server
+cd $BASEDIR
 read -p "Install and configure Solr server? [Y]: " INSTALL_SOLR
 if [ -z $INSTALL_SOLR ] || [ $INSTALL_SOLR = 'Y' ]
 then
