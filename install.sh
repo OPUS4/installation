@@ -171,7 +171,7 @@ then
   rm -rf example-DIH exampledocs multicore/exampledocs
   cd solr/conf
   ln -sf $BASEDIR/solrconfig/schema.xml
-  ln -sf $BASEDIR/solrconfig.solrconfig.xml
+  ln -sf $BASEDIR/solrconfig/solrconfig.xml
   cd ../../
   ln -sf $BASEDIR/solrconfig/logging.properties
 
