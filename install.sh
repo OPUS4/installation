@@ -89,6 +89,25 @@ cd opus4/public/js
 wget -O jquery.js "$JQUERY_LIB_URL"
 cd $BASEDIR
 
+# promt for username
+echo "OPUS requires a dedicated user account under which Solr will be running."
+echo "In order to create this account, you will be prompted for some information." 
+read -p "User Name [opus4]: " OPUS_USER_NAME
+if [ -z $OPUS_USER_NAME ]; then
+  OPUS_USER_NAME=opus4
+fi
+read -p "Home Directory Base Path [/home]: " OPUS_USER_HOME_BASE
+if [ -z $OPUS_USER_HOME_BASE ]; then
+  OPUS_USER_HOME_BASE=/home
+useradd -c 'OPUS 4 Solr manager' -b $OPUS_USER_HOME_BASE -m $OPUS_USER_NAME
+echo "Next, you will be asked to specify a password for the new account."
+passwd $OPUS_USER_NAME
+cd install
+mv opus4-solr-jetty.conf opus4-solr-jetty.conf.tmp
+sed -e 's!^JETTY_USER=!JETTY_USER=$OPUS_USER_NAME!' opus4-solr-jetty.conf.tmp > opus4-solr-jetty.conf
+rm opus4-solr-jetty.conf.tmp
+cd $BASEDIR
+
 # prompt for database parameters
 read -p "New OPUS Database Name [opus400]: "          DBNAME
 read -p "New OPUS Database Admin Name [opus4admin]: " ADMIN
@@ -225,6 +244,9 @@ then
   # start indexing of testdata
   php5 $BASEDIR/opus4/scripts/SolrIndexBuilder.php
 fi
+
+# change file owner to $OPUS_USER_NAME
+chmod -v -R $OPUS_USER_NAME:$OPUS_USER_NAME $BASEDIR
 
 # delete tar archives
 cd $BASEDIR
