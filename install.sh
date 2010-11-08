@@ -170,10 +170,10 @@ then
   cd opus4
   rm -r example-DIH exampledocs multicore/exampledocs
   cd solr/conf
-  ln -sf ../../../../solrconfig/schema.xml
-  ln -sf ../../../../solrconfig.solrconfig.xml
+  ln -sf $BASEDIR/solrconfig/schema.xml
+  ln -sf $BASEDIR/solrconfig.solrconfig.xml
   cd ../../
-  ln -s ../../solrconfig/logging.properties
+  ln -sf $BASEDIR/solrconfig/logging.properties
 
   read -p "Solr server port number [8983]: " SOLR_SERVER_PORT
   if [ -z $SOLR_SERVER_PORT ]; then
@@ -193,8 +193,8 @@ then
   read -p "Install init.d script to start and stop Solr server automatically? [Y]: " INSTALL_INIT_SCRIPT
   if [ -z $INSTALL_INIT_SCRIPT ] || [ $INSTALL_INIT_SCRIPT = 'Y' ]
   then
-    cp -i opus4-solr.sh /etc/init.d/opus4-solr.sh
-    ln -sf opus4-solr-jetty.conf /etc/default/jetty
+    ln -sf $BASEDIR/install/opus4-solr.sh /etc/init.d/opus4-solr.sh
+    ln -sf $BASEDIR/install/opus4-solr-jetty.conf /etc/default/jetty
     chmod +x /etc/init.d/opus4-solr.sh
     update-rc.d opus4-solr.sh defaults
   fi
