@@ -99,6 +99,7 @@ fi
 read -p "Home Directory Base Path [/home]: " OPUS_USER_HOME_BASE
 if [ -z $OPUS_USER_HOME_BASE ]; then
   OPUS_USER_HOME_BASE=/home
+fi
 useradd -c 'OPUS 4 Solr manager' -b $OPUS_USER_HOME_BASE -m $OPUS_USER_NAME
 echo "Next, you will be asked to specify a password for the new account."
 passwd $OPUS_USER_NAME
