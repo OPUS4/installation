@@ -198,6 +198,12 @@ then
   rm config.ini.tmp
 
   cd $BASEDIR/install
+  mv opus4-solr-jetty.conf opus4-solr-jetty.conf.tmp
+  sed -e "s!^JETTY_PORT=!JETTY_PORT=$SOLR_SERVER_PORT!" \
+      -e "s!^JETTY_USER=!JETTY_USER=$OPUS_USER_NAME!" opus4-solr-jetty.conf.tmp > opus4-solr-jetty.conf
+  rm opus4-solr-jetty.conf.tmp
+  chmod +x opus4-solr-jetty
+
   read -p "Install init.d script to start and stop Solr server automatically? [Y]: " INSTALL_INIT_SCRIPT
   if [ -z "$INSTALL_INIT_SCRIPT" ] || [ "$INSTALL_INIT_SCRIPT" = "Y" ] || [ "$INSTALL_INIT_SCRIPT" = "y" ]
   then
@@ -209,11 +215,6 @@ then
   fi
 
   # start Solr server
-  mv opus4-solr-jetty.conf opus4-solr-jetty.conf.tmp
-  sed -e "s!^JETTY_PORT=!JETTY_PORT=$SOLR_SERVER_PORT!" \
-      -e "s!^JETTY_USER=!JETTY_USER=$OPUS_USER_NAME!" opus4-solr-jetty.conf.tmp > opus4-solr-jetty.conf
-  rm opus4-solr-jetty.conf.tmp
-  chmod +x opus4-solr-jetty
   ./opus4-solr-jetty start
 fi
 
