@@ -216,7 +216,7 @@ then
 
   # change file owner of solr installation
   chown -R $OPUS_USER_NAME:$OPUS_USER_NAME $BASEDIR/apache-solr-1.4.1
-  chown -R $OPUS_USER_NAME:$OPUS_USER_NAME $BASEDIR/solrinstall
+  chown -R $OPUS_USER_NAME:$OPUS_USER_NAME $BASEDIR/solrconfig
 
   # start Solr server
   ./opus4-solr-jetty start
