@@ -90,7 +90,7 @@ then
   read -p "Remove OPUS4 user account $OPUS4_USER_ACCOUNT [Y]: " $DELETE_OPUS4_USER_ACCOUNT
   if [ -z "$DELETE_OPUS4_USER_ACCOUNT" ] || [ "$DELETE_OPUS4_USER_ACCOUNT" = "Y" ] || [ "$DELETE_OPUS4_USER_ACCOUNT" = "y" ]
   then
-    userdel -rf $OPUS4_USER_ACCOUNT
+    userdel -f $OPUS4_USER_ACCOUNT
   fi
 fi
 

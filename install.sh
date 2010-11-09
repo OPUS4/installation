@@ -90,19 +90,15 @@ wget -O jquery.js "$JQUERY_LIB_URL"
 cd $BASEDIR
 
 # promt for username
-echo "OPUS requires a dedicated user account under which Solr will be running."
+echo "OPUS requires a dedicated system account under which Solr will be running."
 echo "In order to create this account, you will be prompted for some information." 
-read -p "User Name [opus4]: " OPUS_USER_NAME
+read -p "System Account Name [opus4]: " OPUS_USER_NAME
 if [ -z "$OPUS_USER_NAME" ]; then
   OPUS_USER_NAME=opus4
 fi
-read -p "Home Directory Base Path [/home]: " OPUS_USER_HOME_BASE
-if [ -z "$OPUS_USER_HOME_BASE" ]; then
-  OPUS_USER_HOME_BASE=/home
-fi
-useradd -c 'OPUS 4 Solr manager' -b $OPUS_USER_HOME_BASE -m $OPUS_USER_NAME
-echo "Next, you will be asked to specify a password for the new account."
-passwd $OPUS_USER_NAME
+useradd -c 'OPUS 4 Solr manager' --system $OPUS_USER_NAME
+
+# add JETTY_USER information to Jetty configuration
 cd install
 mv opus4-solr-jetty.conf opus4-solr-jetty.conf.tmp
 sed -e "s!^JETTY_USER=!JETTY_USER=$OPUS_USER_NAME!" opus4-solr-jetty.conf.tmp > opus4-solr-jetty.conf
