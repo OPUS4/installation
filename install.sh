@@ -93,11 +93,11 @@ cd $BASEDIR
 echo "OPUS requires a dedicated user account under which Solr will be running."
 echo "In order to create this account, you will be prompted for some information." 
 read -p "User Name [opus4]: " OPUS_USER_NAME
-if [ -z $OPUS_USER_NAME ]; then
+if [ -z "$OPUS_USER_NAME" ]; then
   OPUS_USER_NAME=opus4
 fi
 read -p "Home Directory Base Path [/home]: " OPUS_USER_HOME_BASE
-if [ -z $OPUS_USER_HOME_BASE ]; then
+if [ -z "$OPUS_USER_HOME_BASE" ]; then
   OPUS_USER_HOME_BASE=/home
 fi
 useradd -c 'OPUS 4 Solr manager' -b $OPUS_USER_HOME_BASE -m $OPUS_USER_NAME
@@ -124,28 +124,28 @@ echo ""
 
 
 # set defaults if value is not given
-if [ -z $DBNAME ]; then
+if [ -z "$DBNAME" ]; then
    DBNAME=opus400
 fi
-if [ -z $ADMIN ]; then
+if [ -z "$ADMIN" ]; then
    ADMIN=opus4admin
 fi
-if [ -z $WEBAPP_USER ]; then
+if [ -z "$WEBAPP_USER" ]; then
    WEBAPP_USER=opus4
 fi
-if [ -z $MYSQLROOT ]; then
+if [ -z "$MYSQLROOT" ]; then
    MYSQLROOT=root
 fi
 
 # process creating mysql user and database
 MYSQL="$MYSQL_CLIENT --default-character-set=utf8 -u $MYSQLROOT -p -v"
 MYSQL_OPUS4ADMIN="$MYSQL_CLIENT --default-character-set=utf8 -u $ADMIN -p$ADMIN_PASSWORD -v"
-if [ ! -z $MYSQLHOST]
+if [ -n "$MYSQLHOST" ]
 then
   MYSQL="$MYSQL -h $MYSQLHOST"
   MYSQL_OPUS4ADMIN="$MYSQL_OPUS4ADMIN -h $MYSQLHOST"
 fi
-if [ ! -z $MYSQLPORT]
+if [ -n "$MYSQLPORT" ]
 then
   MYSQL="$MYSQL -P $MYSQLPORT"
   MYSQL_OPUS4ADMIN="$MYSQL_OPUS4ADMIN -P $MYSQLPORT"
@@ -180,7 +180,7 @@ chmod +x createdb.sh
 # install and configure Solr search server
 cd $BASEDIR
 read -p "Install and configure Solr server? [Y]: " INSTALL_SOLR
-if [ -z $INSTALL_SOLR ] || [ "$INSTALL_SOLR" = "Y" ] || [ "$INSTALL_SOLR" = "y" ]
+if [ -z "$INSTALL_SOLR" ] || [ "$INSTALL_SOLR" = "Y" ] || [ "$INSTALL_SOLR" = "y" ]
 then
   tar xfvz downloads/solr.tgz
   ln -sf apache-solr-1.4.1 solr 
@@ -195,7 +195,7 @@ then
   ln -sf $BASEDIR/solrconfig/logging.properties
 
   read -p "Solr server port number [8983]: " SOLR_SERVER_PORT
-  if [ -z $SOLR_SERVER_PORT ]; then
+  if [ -z "$SOLR_SERVER_PORT" ]; then
     SOLR_SERVER_PORT=8983;
   fi
   cd $BASEDIR/opus4/application/configs
@@ -210,7 +210,7 @@ then
 
   cd $BASEDIR/install
   read -p "Install init.d script to start and stop Solr server automatically? [Y]: " INSTALL_INIT_SCRIPT
-  if [ -z $INSTALL_INIT_SCRIPT ] || [ "$INSTALL_INIT_SCRIPT" = "Y" ] || [ "$INSTALL_INIT_SCRIPT" = "y" ]
+  if [ -z "$INSTALL_INIT_SCRIPT" ] || [ "$INSTALL_INIT_SCRIPT" = "Y" ] || [ "$INSTALL_INIT_SCRIPT" = "y" ]
   then
     ln -sf $BASEDIR/install/opus4-solr-jetty /etc/init.d/opus4-solr-jetty
     ln -sf $BASEDIR/install/opus4-solr-jetty.conf /etc/default/jetty
@@ -229,7 +229,7 @@ fi
 
 # import some test documents
 read -p "Import test data? [Y]: " IMPORT_TESTDATA
-if [ -z $IMPORT_TESTDATA ] || [ "$IMPORT_TESTDATA" = "Y" ] || [ "$IMPORT_TESTDATA" = "y" ]
+if [ -z "$IMPORT_TESTDATA" ] || [ "$IMPORT_TESTDATA" = "Y" ] || [ "$IMPORT_TESTDATA" = "y" ]
 then
   # import test data
   cd $BASEDIR

@@ -31,38 +31,38 @@ OPUS4_DB_ADMIN=`grep 'db.params.username' $BASEDIR/opus4/application/configs/con
 MYSQL_COMMANDS=''
 
 read -p "Delete OPUS4 Database $OPUS4_DB_NAME [Y]: " DELETE_DATABASE
-if [ -z $DELETE_DATABASE ] || [ "$DELETE_DATABASE" = "Y" ] || [ "$DELETE_OPUS4_DB_USER" = "y" ]
+if [ -z "$DELETE_DATABASE" ] || [ "$DELETE_DATABASE" = "Y" ] || [ "$DELETE_OPUS4_DB_USER" = "y" ]
 then
   MYSQL_COMMANDS="$MYSQL_COMMANDS DROP DATABASE IF EXISTS $OPUS4_DB_NAME;"   
 fi
 
 read -p "Delete OPUS4 Database User $OPUS4_DB_USER [Y]: " DELETE_OPUS4_DB_USER
-if [ -z $DELETE_OPUS4_DB_USER ] || [ "$DELETE_OPUS4_DB_USER" = "Y" ] || [ "$DELETE_OPUS4_DB_USER" = "y" ]
+if [ -z "$DELETE_OPUS4_DB_USER" ] || [ "$DELETE_OPUS4_DB_USER" = "Y" ] || [ "$DELETE_OPUS4_DB_USER" = "y" ]
 then
   MYSQL_COMMANDS="$MYSQL_COMMANDS; REVOKE ALL PRIVILEGES ON $OPUS4_DB_NAME.* FROM $OPUS4_DB_USER@'localhost'; DROP USER $OPUS4_DB_USER@'localhost';"
 fi
 
 read -p "Delete OPUS4 Database Admin User $OPUS4_DB_ADMIN [Y]: " DELETE_OPUS4_DB_ADMIN
-if [ -z $DELETE_OPUS4_DB_ADMIN ] || [ "$DELETE_OPUS4_DB_ADMIN" = "Y" ] || [ "$DELETE_OPUS4_DB_ADMIN" = "y" ]
+if [ -z "$DELETE_OPUS4_DB_ADMIN" ] || [ "$DELETE_OPUS4_DB_ADMIN" = "Y" ] || [ "$DELETE_OPUS4_DB_ADMIN" = "y" ]
 then
   MYSQL_COMMANDS="$MYSQL_COMMANDS; REVOKE ALL PRIVILEGES ON $OPUS4_DB_NAME.* FROM $OPUS4_DB_ADMIN@'localhost'; DROP USER $OPUS4_DB_ADMIN@'localhost';"
 fi
 
-if [ ! -z $MYSQL_COMMANDS ]
+if [ -n "$MYSQL_COMMANDS" ]
 then
   read -p "MySQL Root User [root]: " MYSQLROOT
   read -p "MySQL DBMS Host [leave blank for using Unix domain sockets]: " MYSQLHOST
   read -p "MySQL DBMS Port [leave blank for using Unix domain sockets]: " MYSQLPORT
   echo ""
-  if [ -z $MYSQLROOT ]; then
+  if [ -z "$MYSQLROOT" ]; then
     MYSQLROOT=root
   fi
 
   MYSQL="$MYSQL_CLIENT --default-character-set=utf8 -u $MYSQLROOT -p -v"
-  if [ ! -z $MYSQLHOST]; then
+  if [ -n "$MYSQLHOST" ]; then
     MYSQL="$MYSQL -h $MYSQLHOST"
   fi
-  if [ ! -z $MYSQLPORT]; then
+  if [ -n "$MYSQLPORT" ]; then
     MYSQL="$MYSQL -P $MYSQLPORT"
   fi
 
@@ -77,10 +77,10 @@ rm -rf /etc/init.d/opus4-solr-jetty
 rm -rf /etc/default/jetty 
 
 OPUS4_USER_ACCOUNT=`grep '^JETTY_USER=' $BASEDIR/install/opus4-solr-jetty.conf | cut -d= -f2`
-if [ ! -z $OPUS4_USER_ACCOUNT ]
+if [ -n "$OPUS4_USER_ACCOUNT" ]
 then
   read -p "Remove OPUS4 user account $OPUS4_USER_ACCOUNT [Y]: " $DELETE_OPUS4_USER_ACCOUNT
-  if [ -z $DELETE_OPUS4_USER_ACCOUNT ] || [ "$DELETE_OPUS4_USER_ACCOUNT" = "Y" ] || [ "$DELETE_OPUS4_USER_ACCOUNT" = "y" ]
+  if [ -z "$DELETE_OPUS4_USER_ACCOUNT" ] || [ "$DELETE_OPUS4_USER_ACCOUNT" = "Y" ] || [ "$DELETE_OPUS4_USER_ACCOUNT" = "y" ]
   then
     userdel -rf $OPUS4_USER_ACCOUNT
   fi
