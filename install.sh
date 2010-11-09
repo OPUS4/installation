@@ -180,7 +180,7 @@ chmod +x createdb.sh
 # install and configure Solr search server
 cd $BASEDIR
 read -p "Install and configure Solr server? [Y]: " INSTALL_SOLR
-if [ -z $INSTALL_SOLR ] || [ $INSTALL_SOLR = 'Y' ] || [ $INSTALL_SOLR = 'y' ]
+if [ -z $INSTALL_SOLR ] || [ "$INSTALL_SOLR" = "Y" ] || [ "$INSTALL_SOLR" = "y" ]
 then
   tar xfvz downloads/solr.tgz
   ln -sf apache-solr-1.4.1 solr 
@@ -210,7 +210,7 @@ then
 
   cd $BASEDIR/install
   read -p "Install init.d script to start and stop Solr server automatically? [Y]: " INSTALL_INIT_SCRIPT
-  if [ -z $INSTALL_INIT_SCRIPT ] || [ $INSTALL_INIT_SCRIPT = 'Y' ] || [ $INSTALL_INIT_SCRIPT = 'y' ]
+  if [ -z $INSTALL_INIT_SCRIPT ] || [ "$INSTALL_INIT_SCRIPT" = "Y" ] || [ "$INSTALL_INIT_SCRIPT" = "y" ]
   then
     ln -sf $BASEDIR/install/opus4-solr-jetty /etc/init.d/opus4-solr-jetty
     ln -sf $BASEDIR/install/opus4-solr-jetty.conf /etc/default/jetty
@@ -229,7 +229,7 @@ fi
 
 # import some test documents
 read -p "Import test data? [Y]: " IMPORT_TESTDATA
-if [ -z $IMPORT_TESTDATA ] || [ $IMPORT_TESTDATA = 'Y' ] || [ $IMPORT_TESTDATA = 'y' ]
+if [ -z $IMPORT_TESTDATA ] || [ "$IMPORT_TESTDATA" = "Y" ] || [ "$IMPORT_TESTDATA" = "y" ]
 then
   # import test data
   cd $BASEDIR
@@ -262,7 +262,7 @@ chown -R $OPUS_USER_NAME:$OPUS_USER_NAME $BASEDIR
 # delete tar archives
 cd $BASEDIR
 read -p "Delete downloads? [N]: " DELETE_DOWNLOADS
-if [ $DELETE_DOWNLOADS = 'Y' -o  $DELETE_DOWNLOADS = 'y' ]; then
+if [ "$DELETE_DOWNLOADS" = "Y" ] || [ "$DELETE_DOWNLOADS" = "y" ]; then
   rm -rf downloads
 fi
   
