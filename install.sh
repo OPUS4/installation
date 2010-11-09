@@ -262,8 +262,7 @@ chown -R $OPUS_USER_NAME:$OPUS_USER_NAME $BASEDIR
 # delete tar archives
 cd $BASEDIR
 read -p "Delete downloads? [N]: " DELETE_DOWNLOADS
-if [ $DELETE_DOWNLOADS = 'Y' ] || [ $DELETE_DOWNLOADS = 'y' ] 
-then
+if [ $DELETE_DOWNLOADS = 'Y' -o  $DELETE_DOWNLOADS = 'y' ]; then
   rm -rf downloads
 fi
   
