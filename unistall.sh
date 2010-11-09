@@ -25,27 +25,27 @@ MYSQL_CLIENT=/usr/bin/mysql
 
 cd $BASEDIR
 
-OPUS4_DB_NAME=`grep '^dbname=' $BASEDIR/opus4/db/createdb.sh | cut -d= -f2`
-OPUS4_DB_USER=`grep '^user=' $BASEDIR/opus4/db/createdb.sh | cut -d= -f2`
-OPUS4_DB_ADMIN=`grep 'db.params.username' $BASEDIR/opus4/application/configs/config.ini | cut -d' ' -f3`
+OPUS4_DB_NAME=`grep '^dbname=' $BASEDIR/opus4/db/createdb.sh | cut -d= -f2 | sed -e "s/'//g"`
+OPUS4_DB_USER=`grep '^user=' $BASEDIR/opus4/db/createdb.sh | cut -d= -f2 | sed -e "s/'//g"`
+OPUS4_DB_ADMIN=`grep 'db.params.username' $BASEDIR/opus4/application/configs/config.ini | cut -d' ' -f3 | sed -e "s/'//g"`
 MYSQL_COMMANDS=''
 
 read -p "Delete OPUS4 Database $OPUS4_DB_NAME [Y]: " DELETE_DATABASE
 if [ -z "$DELETE_DATABASE" ] || [ "$DELETE_DATABASE" = "Y" ] || [ "$DELETE_OPUS4_DB_USER" = "y" ]
 then
-  MYSQL_COMMANDS="$MYSQL_COMMANDS DROP DATABASE IF EXISTS $OPUS4_DB_NAME;"   
+  MYSQL_COMMANDS="$MYSQL_COMMANDS DROP DATABASE IF EXISTS $OPUS4_DB_NAME ;"   
 fi
 
 read -p "Delete OPUS4 Database User $OPUS4_DB_USER [Y]: " DELETE_OPUS4_DB_USER
 if [ -z "$DELETE_OPUS4_DB_USER" ] || [ "$DELETE_OPUS4_DB_USER" = "Y" ] || [ "$DELETE_OPUS4_DB_USER" = "y" ]
 then
-  MYSQL_COMMANDS="$MYSQL_COMMANDS; REVOKE ALL PRIVILEGES ON $OPUS4_DB_NAME.* FROM $OPUS4_DB_USER@'localhost'; DROP USER $OPUS4_DB_USER@'localhost';"
+  MYSQL_COMMANDS="$MYSQL_COMMANDS REVOKE ALL PRIVILEGES ON $OPUS4_DB_NAME.* FROM '$OPUS4_DB_USER'@'localhost' ; DROP USER '$OPUS4_DB_USER'@'localhost' ;"
 fi
 
 read -p "Delete OPUS4 Database Admin User $OPUS4_DB_ADMIN [Y]: " DELETE_OPUS4_DB_ADMIN
 if [ -z "$DELETE_OPUS4_DB_ADMIN" ] || [ "$DELETE_OPUS4_DB_ADMIN" = "Y" ] || [ "$DELETE_OPUS4_DB_ADMIN" = "y" ]
 then
-  MYSQL_COMMANDS="$MYSQL_COMMANDS; REVOKE ALL PRIVILEGES ON $OPUS4_DB_NAME.* FROM $OPUS4_DB_ADMIN@'localhost'; DROP USER $OPUS4_DB_ADMIN@'localhost';"
+  MYSQL_COMMANDS="$MYSQL_COMMANDS REVOKE ALL PRIVILEGES ON $OPUS4_DB_NAME.* FROM '$OPUS4_DB_ADMIN'@'localhost' ; DROP USER '$OPUS4_DB_ADMIN'@'localhost' ;"
 fi
 
 if [ -n "$MYSQL_COMMANDS" ]
@@ -67,7 +67,7 @@ then
   fi
 
   echo "Next you'll be now prompted to enter the root password of your MySQL server"
-  $MYSQL < $MYSQL_COMMANDS
+  $MYSQL -e "$MYSQL_COMMANDS"
 fi
 
 cd $BASEDIR/install
