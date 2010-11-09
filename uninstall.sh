@@ -70,8 +70,7 @@ then
   $MYSQL -e "$MYSQL_COMMANDS"
 fi
 
-cd $BASEDIR/install
-./opus4-solr-jetty stop
+/etc/init.d/opus4-solr-jetty stop
 update-rc.d -f opus4-solr-jetty remove
 rm -rf /etc/init.d/opus4-solr-jetty
 rm -rf /etc/default/jetty 
