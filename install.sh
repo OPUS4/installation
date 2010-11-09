@@ -98,13 +98,6 @@ if [ -z "$OPUS_USER_NAME" ]; then
 fi
 useradd -c 'OPUS 4 Solr manager' --system $OPUS_USER_NAME
 
-# add JETTY_USER information to Jetty configuration
-cd install
-mv opus4-solr-jetty.conf opus4-solr-jetty.conf.tmp
-sed -e "s!^JETTY_USER=!JETTY_USER=$OPUS_USER_NAME!" opus4-solr-jetty.conf.tmp > opus4-solr-jetty.conf
-rm opus4-solr-jetty.conf.tmp
-cd $BASEDIR
-
 # prompt for database parameters
 read -p "New OPUS Database Name [opus400]: "          DBNAME
 read -p "New OPUS Database Admin Name [opus4admin]: " ADMIN
@@ -215,9 +208,10 @@ then
     update-rc.d opus4-solr-jetty defaults
   fi
 
-  #start Solr server
+  # start Solr server
   mv opus4-solr-jetty.conf opus4-solr-jetty.conf.tmp
-  sed -e "s!^JETTY_PORT=!JETTY_PORT=$SOLR_SERVER_PORT!" opus4-solr-jetty.conf.tmp > opus4-solr-jetty.conf
+  sed -e "s!^JETTY_PORT=!JETTY_PORT=$SOLR_SERVER_PORT!" \
+      -e "s!^JETTY_USER=!JETTY_USER=$OPUS_USER_NAME!" opus4-solr-jetty.conf.tmp > opus4-solr-jetty.conf
   rm opus4-solr-jetty.conf.tmp
   chmod +x opus4-solr-jetty
   ./opus4-solr-jetty start
