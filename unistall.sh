@@ -77,6 +77,14 @@ rm -rf /etc/init.d/opus4-solr-jetty
 rm -rf /etc/default/jetty 
 
 OPUS4_USER_ACCOUNT=`grep '^JETTY_USER=' $BASEDIR/install/opus4-solr-jetty.conf | cut -d= -f2`
+
+read -p "Remove OPUS4 instance directory? [N]: " REMOVE_INSTANCE_DIR
+if [ "$REMOVE_INSTANCE_DIR" = "Y" ] || [ "$REMOVE_INSTANCE_DIR" = "y" ]
+then
+  cd $BASEDIR/..
+  rm -rf $BASEDIR
+fi
+
 if [ -n "$OPUS4_USER_ACCOUNT" ]
 then
   read -p "Remove OPUS4 user account $OPUS4_USER_ACCOUNT [Y]: " $DELETE_OPUS4_USER_ACCOUNT
@@ -84,13 +92,6 @@ then
   then
     userdel -rf $OPUS4_USER_ACCOUNT
   fi
-fi
-
-read -p "Remove OPUS4 instance directory? [N]: " REMOVE_INSTANCE_DIR
-if [ "$REMOVE_INSTANCE_DIR" = "Y" ] || [ "$REMOVE_INSTANCE_DIR" = "y" ]
-then
-  cd $BASEDIR/..
-  rm -rf $BASEDIR
 fi
 
 echo "Deinstallation of OPUS4 completed."
