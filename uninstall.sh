@@ -26,8 +26,8 @@ MYSQL_CLIENT=/usr/bin/mysql
 cd $BASEDIR
 
 OPUS4_DB_NAME=`grep '^dbname=' $BASEDIR/opus4/db/createdb.sh | cut -d= -f2 | sed -e "s/'//g"`
-OPUS4_DB_USER=`grep '^user=' $BASEDIR/opus4/db/createdb.sh | cut -d= -f2 | sed -e "s/'//g"`
-OPUS4_DB_ADMIN=`grep 'db.params.username' $BASEDIR/opus4/application/configs/config.ini | cut -d' ' -f3 | sed -e "s/'//g"`
+OPUS4_DB_ADMIN=`grep '^user=' $BASEDIR/opus4/db/createdb.sh | cut -d= -f2 | sed -e "s/'//g"`
+OPUS4_DB_USER=`grep 'db.params.username' $BASEDIR/opus4/application/configs/config.ini | cut -d' ' -f3 | sed -e "s/'//g"`
 MYSQL_COMMANDS=''
 
 read -p "Delete OPUS4 Database $OPUS4_DB_NAME [Y]: " DELETE_DATABASE
