@@ -108,6 +108,7 @@ read -p "New OPUS Database User Password: " -s        WEBAPP_USER_PASSWORD
 echo ""
 read -p "MySQL DBMS Host [leave blank for using Unix domain sockets]: " MYSQLHOST
 read -p "MySQL DBMS Port [leave blank for using Unix domain sockets]: " MYSQLPORT
+echo ""
 read -p "MySQL Root User [root]: "                                      MYSQLROOT
 echo ""
 
@@ -124,6 +125,11 @@ if [ -z "$WEBAPP_USER" ]; then
 fi
 if [ -z "$MYSQLROOT" ]; then
    MYSQLROOT=root
+fi
+if [ -z "$MYSQLHOST" ]; then
+  HOST=localhost
+else
+  HOST="$MYSQLHOST"
 fi
 
 # process creating mysql user and database
@@ -143,8 +149,8 @@ fi
 echo "Next you'll be now prompted to enter the root password of your MySQL server"
 $MYSQL <<LimitString
 CREATE DATABASE $DBNAME DEFAULT CHARACTER SET = UTF8 DEFAULT COLLATE = UTF8_GENERAL_CI;
-GRANT ALL PRIVILEGES ON $DBNAME.* TO '$ADMIN'@'localhost' IDENTIFIED BY '$ADMIN_PASSWORD';
-GRANT SELECT,INSERT,UPDATE,DELETE ON $DBNAME.* TO '$WEBAPP_USER'@'localhost' IDENTIFIED BY '$WEBAPP_USER_PASSWORD';
+GRANT ALL PRIVILEGES ON $DBNAME.* TO '$ADMIN'@'$HOST' IDENTIFIED BY '$ADMIN_PASSWORD';
+GRANT SELECT,INSERT,UPDATE,DELETE ON $DBNAME.* TO '$WEBAPP_USER'@'$HOST' IDENTIFIED BY '$WEBAPP_USER_PASSWORD';
 FLUSH PRIVILEGES;
 LimitString
 
@@ -189,10 +195,10 @@ then
   fi
   cd $BASEDIR/opus4/application/configs
   cp config.ini config.ini.tmp
-  sed -e "s!^searchengine.index.host =!searchengine.index.host = 'localhost'!" \
+  sed -e "s!^searchengine.index.host =!searchengine.index.host = '$HOST'!" \
       -e "s!^searchengine.index.port =!searchengine.index.port = '$SOLR_SERVER_PORT'!" \
       -e "s!^searchengine.index.app =!searchengine.index.app = 'solr'!" \
-      -e "s!^searchengine.extract.host =!searchengine.extract.host = 'localhost'!" \
+      -e "s!^searchengine.extract.host =!searchengine.extract.host = '$HOST'!" \
       -e "s!^searchengine.extract.port =!searchengine.extract.port = '$SOLR_SERVER_PORT'!" \
       -e "s!^searchengine.extract.app =!searchengine.extract.app = 'solr'!" config.ini.tmp > config.ini 
   rm config.ini.tmp
@@ -237,14 +243,15 @@ then
   cp -rv testdata/fulltexts/* workspace/files
 
   # sleep some seconds to ensure the server is running
-  echo -e "\n\nsleep some seconds until the Solr server is running"
-  i=0;
-  while [ $i -lt 20 ]
-  do
-    sleep 1
+  echo -e "\n\nwait until Solr server is running..."
+
+  while :; do
     echo -n "."
-    i=$[$i+1]
+    wget -q -O /dev/null "http://localhost:8983/solr/admin/ping" && break
+    sleep 2
   done
+
+  echo "completed."
   echo ""
 
   # start indexing of testdata
