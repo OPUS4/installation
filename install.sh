@@ -253,6 +253,8 @@ fi
 
 # change file owner to $OPUS_USER_NAME
 chown -R $OPUS_USER_NAME:$OPUS_USER_NAME $BASEDIR
+cd $BASEDIR/workspace
+chmod -R 777 *
 
 # delete tar archives
 cd $BASEDIR
