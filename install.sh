@@ -243,7 +243,7 @@ then
   cp -rv testdata/fulltexts/* workspace/files
 
   # sleep some seconds to ensure the server is running
-  echo -e "\n\nwait until Solr server is running..."
+  echo -en "\n\nwait until Solr server is running..."
 
   while :; do
     echo -n "."
