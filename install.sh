@@ -247,11 +247,12 @@ then
 
   while :; do
     echo -n "."
-    wget -q -O /dev/null "http://localhost:8983/solr/admin/ping" && break
+    wget -q -O /dev/null "http://localhost:$SOLR_SERVER_PORT/solr/admin/ping" && break
     sleep 2
   done
 
   echo "completed."
+  echo "Solr server is running under http://localhost:$SOLR_SERVER_PORT/solr"
   echo ""
 
   # start indexing of testdata
