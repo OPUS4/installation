@@ -79,6 +79,12 @@ fi
 
 # create .htaccess
 sed -e 's!<template>!/opus4!' opus4/public/htaccess-template > opus4/public/.htaccess
+if [ $OS = "ubuntu" ]
+then
+  cp opus4/public/.htaccess opus4/public/.htaccess.tmp
+  sed -e 's!#Enable for UBUNTU/DEBIAN:# !!' opus4/public/.htaccess.tmp > opus4/public/.htaccess
+  rm opus4/public/.htaccess.tmp
+fi
 
 # download and install required libraries
 cd libs
