@@ -1,4 +1,5 @@
 #!/usr/bin/env bash  
+
 ### BEGIN INIT INFO
 # Provides:          opus4-solr-jetty
 # Required-Start:    $local_fs $remote_fs $network $syslog
@@ -8,8 +9,6 @@
 # X-Interactive:     true
 # Short-Description: start/stop Jetty Servlet Container
 ### END INIT INFO
-
-
 
 # Configuration files
 #
@@ -665,6 +664,4 @@ case "$ACTION" in
 esac
 
 exit 0
-
-
 
