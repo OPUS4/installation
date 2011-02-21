@@ -216,7 +216,7 @@ read -p "Install and configure Solr server? [Y]: " INSTALL_SOLR
 if [ -z "$INSTALL_SOLR" ] || [ "$INSTALL_SOLR" = "Y" ] || [ "$INSTALL_SOLR" = "y" ]
 then
   tar xfvz downloads/solr.tgz
-  ln -sf apache-solr-1.4.1 solr 
+  ln -sf apache-solr-1.4.1 solr
   cd solr
   cp -r example opus4
   cd opus4
@@ -259,6 +259,7 @@ then
   then
     ln -sf $BASEDIR/install/opus4-solr-jetty /etc/init.d/opus4-solr-jetty
     ln -sf $BASEDIR/install/opus4-solr-jetty.conf /etc/default/jetty
+    ln -sf $BASEDIR/install/jetty-logging.xml $BASEDIR/solr/opus4/etc/jetty-logging.xml
     chmod +x /etc/init.d/opus4-solr-jetty
     if [ $OS = "ubuntu" ]
     then
